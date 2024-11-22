@@ -1,4 +1,5 @@
 # Db datas
+.idea/
 db/data/
 *.csv
 # Byte-compiled / optimized / DLL files
