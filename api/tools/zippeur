@@ -1,0 +1,1 @@
+zip -r test.zip testapi/ -x "testapi/**/*.csv" "testapi/.git/*" "testapi/.idea/*" "testapi/**/*.pyc" "testapi/**/*.zip"
