@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from sqlmodel import Field, SQLModel, Relationship, select, Session
 from sqlalchemy.exc import OperationalError, NoResultFound
 from time import sleep
-from QueryStorer import QueryStorer,ENGINE
+from QueryStorer import QueryStorer, ENGINE
 import csv
 
 
@@ -33,7 +33,8 @@ class Commune(SQLModel, table=True):
 
 
 class Lieux(SQLModel, table=True):
-    ID: str = Field(primary_key=True, max_length=50)
+    ID: int = Field(primary_key=True)
+    ID_STR: str = Field(max_length=50)
     Numero: str = Field(default=None, max_length=50)
     ID_VOIE: int = Field(foreign_key="voie.ID")
     ID_CP: int = Field(foreign_key="codepostal.ID")
@@ -72,7 +73,7 @@ def create_db():
 def get_first(type_donnee: str, id: int):
     if not (classe_choisie := DATATYPE.get(type_donnee.lower())):
         return "no go"
-    with (Session(ENGINE) as session):
+    with Session(ENGINE) as session:
         try:
             return session.exec(select(classe_choisie).where(classe_choisie.ID == id)).one()
         except NoResultFound:
@@ -80,6 +81,7 @@ def get_first(type_donnee: str, id: int):
 
 @app.post("/populate_db/")
 def populate_db():
+    create_db()
     store = QueryStorer(bulk_size=50000)
     with open("data/bano.csv") as f:
         for index, ligne in enumerate(csv.reader(f)):
