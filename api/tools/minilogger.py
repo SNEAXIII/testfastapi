@@ -22,7 +22,7 @@ class MiniLog:
     @staticmethod
     def get_log():
         with open("logged") as f:
-            return f.read()
+            return f.readlines()
 
 
 ml = MiniLog()
