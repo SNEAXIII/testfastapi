@@ -5,7 +5,7 @@ from sqlmodel import Session, text
 from tools.connector import ENGINE
 from tools.minilogger import MiniLog
 
-TEMPLATE_LIEUX = "INSERT INTO lieux (ID, Numero, ID_VOIE, ID_CP, ID_Commune, x, y) VALUES %s;"
+TEMPLATE_LIEUX = "INSERT INTO lieux (ID_STR, Numero, ID_VOIE, ID_CP, ID_Commune, x, y) VALUES %s;"
 TEMPLATE_VOIE = "INSERT INTO voie (Nom) VALUES %s;"
 TEMPLATE_CP = "INSERT INTO codepostal (Numero) VALUES %s;"
 TEMPLATE_COMMUNE = "INSERT INTO commune (Nom) VALUES %s;"
@@ -76,7 +76,7 @@ class QueryStorer:
 
     def flush(self):
         self.total += len(self.lignes)
-        print(f"Nombre de lieux à ajouter = {len(self.lignes)}\nTotal ajouté = {self.total}")
+        print(f"Nombre de lieux à ajouter = {len(self.lignes)}")
         with Session(ENGINE) as session:
             for table, contenu in self.index_to_exec.items():
                 raw_data = contenu[1][contenu[0]:len(contenu[1])]
@@ -91,7 +91,10 @@ class QueryStorer:
                 sql = text(TEMPLATE_LIEUX % self.get_merged_lieux())
                 self.reset_lignes()
                 session.exec(sql)
+            # try :
             session.commit()
+            print(f"Total ajouté = {self.total}")
+
 
 
 if __name__ == "__main__":

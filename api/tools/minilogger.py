@@ -1,6 +1,6 @@
 class MiniLog:
     def __init__(self):
-        self.log()
+        self.log("___________________\nSession initialized")
 
     @staticmethod
     def log(message):

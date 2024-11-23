@@ -4,6 +4,8 @@ from sqlmodel import Field, SQLModel, Relationship, select, Session
 from sqlalchemy.exc import OperationalError, NoResultFound
 from time import sleep
 from QueryStorer import QueryStorer, ENGINE
+from tools.db_security import bulk_insert_decorator
+from tools.secrets import BULK_INSERT_NUMBER,CSV_PATH,DB_CONNECTION_RETRY,DB_CONNECTION_TIMEOUT
 import csv
 
 
@@ -52,12 +54,24 @@ DATATYPE = {
     "commune": Commune,
     "lieu": Lieux
 }
+
+
+@bulk_insert_decorator
+def populate_db():
+    store = QueryStorer(bulk_size=BULK_INSERT_NUMBER)
+    with open(CSV_PATH) as f:
+        for index, ligne in enumerate(csv.reader(f)):
+            store.add_lieu(ligne)
+        store.flush()
+    return "done"
+
+
 app = FastAPI()
 
 
 @app.post("/create_db/", response_model=Status)
 def create_db():
-    for essai in range(15):
+    for essai in range(DB_CONNECTION_RETRY):
         try:
             SQLModel.metadata.drop_all(ENGINE)
             SQLModel.metadata.create_all(ENGINE)
@@ -65,7 +79,7 @@ def create_db():
             return Status()
         except OperationalError:
             print(f"Erreur lors de la création du shéma de la BDD, essai numéro {essai + 1}")
-            sleep(1)
+            sleep(DB_CONNECTION_TIMEOUT)
     return Status(False)
 
 
@@ -79,12 +93,9 @@ def get_first(type_donnee: str, id: int):
         except NoResultFound:
             return "curl ko"
 
+
 @app.post("/populate_db/")
-def populate_db():
+@bulk_insert_decorator
+def post_populate_db():
     create_db()
-    store = QueryStorer(bulk_size=50000)
-    with open("data/bano.csv") as f:
-        for index, ligne in enumerate(csv.reader(f)):
-            store.add_lieu(ligne)
-        store.flush()
-    return "done"
+    populate_db()
