@@ -23,7 +23,7 @@ def enable_security():
 def executor(action: str):
     if (action := action.upper()) not in STATE:
         raise ValueError(f"Invalid action {action}!")
-    bin_action = bin(STATE[action])
+    bin_action = STATE[action]
     with Session(ENGINE) as session:
         for table in ALL_TABLE:
             session.exec(text(f"ALTER TABLE {table} {action} KEYS;"))
