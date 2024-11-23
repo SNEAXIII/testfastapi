@@ -3,7 +3,7 @@ import csv
 from ordered_set import OrderedSet
 from sqlmodel import Session, text
 from tools.connector import ENGINE
-from tools.minilogger import MiniLog
+from tools.minilogger import ml
 
 TEMPLATE_LIEUX = "INSERT INTO lieux (ID_STR, Numero, ID_VOIE, ID_CP, ID_Commune, x, y) VALUES %s;"
 TEMPLATE_VOIE = "INSERT INTO voie (Nom) VALUES %s;"
@@ -76,7 +76,7 @@ class QueryStorer:
 
     def flush(self):
         self.total += len(self.lignes)
-        print(f"Nombre de lieux à ajouter = {len(self.lignes)}")
+        ml.log(f"Nombre de lieux à ajouter = {len(self.lignes)}")
         with Session(ENGINE) as session:
             for table, contenu in self.index_to_exec.items():
                 raw_data = contenu[1][contenu[0]:len(contenu[1])]
@@ -93,8 +93,7 @@ class QueryStorer:
                 session.exec(sql)
             # try :
             session.commit()
-            print(f"Total ajouté = {self.total}")
-
+            ml.log(f"Total ajouté = {self.total}")
 
 
 if __name__ == "__main__":
@@ -103,4 +102,4 @@ if __name__ == "__main__":
         for index, ligne in enumerate(csv.reader(f)):
             store.add_lieu(ligne)
             store.flush()
-    print(store.lignes)
+    ml.log(store.lignes)

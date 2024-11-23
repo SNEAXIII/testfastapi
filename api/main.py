@@ -5,6 +5,7 @@ from sqlalchemy.exc import OperationalError, NoResultFound
 from time import sleep
 from QueryStorer import QueryStorer, ENGINE
 from tools.db_security import bulk_insert_decorator
+from tools.minilogger import ml
 from tools.secrets import BULK_INSERT_NUMBER,CSV_PATH,DB_CONNECTION_RETRY,DB_CONNECTION_TIMEOUT
 import csv
 
@@ -75,10 +76,10 @@ def create_db():
         try:
             SQLModel.metadata.drop_all(ENGINE)
             SQLModel.metadata.create_all(ENGINE)
-            print("Création du schéma réussie")
+            ml.log("Création du schéma réussie")
             return Status()
         except OperationalError:
-            print(f"Erreur lors de la création du shéma de la BDD, essai numéro {essai + 1}")
+            ml.log(f"Erreur lors de la création du shéma de la BDD, essai numéro {essai + 1}")
             sleep(DB_CONNECTION_TIMEOUT)
     return Status(False)
 
