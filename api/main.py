@@ -95,13 +95,24 @@ def create_db():
     return Status(False)
 
 
-@app.get("/{type_donnee}/{id}/")
-def get_first(type_donnee: str, id: int):
+@app.get("/get/{type_donnee}/{id}/")
+def get_elem(type_donnee: str, id: int):
     if not (classe_choisie := DATATYPE.get(type_donnee.lower())):
         return "no go"
     with Session(ENGINE) as session:
         try:
             return session.exec(select(classe_choisie).where(classe_choisie.ID == id)).one()
+        except NoResultFound:
+            return "curl ko"
+
+
+@app.get("/like/{type_donnee}/{id}/")
+def get_like_elem(type_donnee: str, id: int):
+    if not (classe_choisie := DATATYPE.get(type_donnee.lower())):
+        return "no go"
+    with Session(ENGINE) as session:
+        try:
+            return session.exec(select(classe_choisie).where(classe_choisie.ID == id)).one() # TODO add like for comparison
         except NoResultFound:
             return "curl ko"
 
