@@ -1,5 +1,7 @@
-# Db datas
+logged
 .idea/
+
+# Db datas
 db/data/
 *.csv
 # Byte-compiled / optimized / DLL files
