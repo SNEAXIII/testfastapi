@@ -95,7 +95,6 @@ def get_first(type_donnee: str, id: int):
 
 
 @app.post("/populate_db/")
-@bulk_insert_decorator
 def post_populate_db():
     create_db()
     populate_db()
