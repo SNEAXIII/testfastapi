@@ -5,5 +5,8 @@ class MiniLog:
     @staticmethod
     def log(message):
         with open("logged", "a") as f:
-            f.write(message)
+            f.write(f"{message}\n")
             print(message)
+
+
+ml = MiniLog()
