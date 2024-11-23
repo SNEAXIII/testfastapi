@@ -6,7 +6,7 @@ from time import sleep
 from QueryStorer import QueryStorer, ENGINE
 from tools.db_security import bulk_insert_decorator
 from tools.minilogger import ml
-from tools.secrets import BULK_INSERT_NUMBER,CSV_PATH,DB_CONNECTION_RETRY,DB_CONNECTION_TIMEOUT
+from tools.secrets import BULK_INSERT_NUMBER, CSV_PATH, DB_CONNECTION_RETRY, DB_CONNECTION_TIMEOUT
 import csv
 
 
@@ -68,6 +68,17 @@ def populate_db():
 
 
 app = FastAPI()
+
+
+@app.get("/log/")
+def get_log():
+    return ml.get_log()
+
+
+@app.delete("/log/")
+def get_log():
+    ml.clear_log()
+    return "succes"
 
 
 @app.post("/create_db/", response_model=Status)
