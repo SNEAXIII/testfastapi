@@ -25,13 +25,6 @@ class QueryStorer:
             "commune": [0, self.communes, TEMPLATE_COMMUNE]
         }
 
-    # def __str__(self)->str:
-    #     def trunk(_str:str)->str:
-    #         return _str[:72] + '...' if len(_str) > 75 else _str
-    #     eol = "\n"
-    #     tab = "    "
-    #     return f"self.index_to_exec={eol+tab}{eol+tab.join()}"
-
     def reset_lignes(self):
         self.lignes = []
 
@@ -95,11 +88,12 @@ class QueryStorer:
             session.commit()
             ml.log(f"Total ajouté = {self.total}")
 
-
-if __name__ == "__main__":
-    store = QueryStorer()
-    with open("data/minibano.csv") as f:
+"""
+# Exemple usage
+def populate_db():
+    store = QueryStorer(bulk_size=BULK_INSERT_NUMBER)
+    with open(CSV_PATH) as f:
         for index, ligne in enumerate(csv.reader(f)):
             store.add_lieu(ligne)
-            store.flush()
-    ml.log(store.lignes)
+        store.flush()
+"""
