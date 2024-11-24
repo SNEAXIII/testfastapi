@@ -3,6 +3,7 @@ logged
 
 # Db datas
 db/backup
+db/data
 *.csv
 
 # Byte-compiled / optimized / DLL files

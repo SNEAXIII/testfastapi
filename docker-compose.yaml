@@ -11,7 +11,7 @@ services:
     volumes:
       - ./db/tools:/tools
       - ./db/backup:/backup
-#      - ./db/data:/var/lib/mysql
+      - ./db/data:/var/lib/mysql
     tty: true
 
   api:
