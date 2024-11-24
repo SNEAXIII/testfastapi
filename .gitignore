@@ -2,8 +2,9 @@ logged
 .idea/
 
 # Db datas
-db/data/
+db/backup
 *.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
