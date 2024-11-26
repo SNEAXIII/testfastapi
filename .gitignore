@@ -2,6 +2,7 @@ logs
 .idea/
 
 # Db datas
+database.db
 db/backup
 db/data
 *.csv
