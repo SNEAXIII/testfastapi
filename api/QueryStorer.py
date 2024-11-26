@@ -30,7 +30,8 @@ class QueryStorer:
 
     @staticmethod
     def trim_50(_str: str) -> str:
-        return (_str if len(_str) <= 50 else f"{_str[:47]}...").replace("\"", "")
+        return (_str if len(_str) <= 50 else f"{_str[:47]}...")\
+            .replace("\"", "")
 
     def add_voie(self, voie: str) -> int:
         return self.voies.add(self.trim_50(voie))
