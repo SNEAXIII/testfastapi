@@ -6,6 +6,7 @@ stop_wsl:
 create_ssl_keys:
 	php $(api_console_path) lexik:jwt:generate-keypair
 up:
+	make start_docker_desktop
 	docker compose up
 stop:
 	docker compose stop
@@ -21,6 +22,7 @@ portainer:
 	cmd /c start "https://localhost:9443"
 end:
 	make stop
+	make stop_wsl
 kill:
 	make end
 	make rm
@@ -30,3 +32,5 @@ docs:
 	cmd /c start "http://localhost:8000/docs"
 dump:
 	docker exec mysql /tools/dump.sh
+populate:
+	curl --location --request POST 'http://localhost:8000/populate_db'
