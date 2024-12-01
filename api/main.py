@@ -1,4 +1,5 @@
 # openssl rand -hex 128
+from json import dumps
 from fastapi import FastAPI
 from sqlmodel import Field, SQLModel, Relationship, select, Session
 from sqlalchemy.exc import OperationalError, NoResultFound
@@ -44,9 +45,9 @@ class Lieux(SQLModel, table=True):
     ID_Commune: int = Field(foreign_key="commune.ID")
     x: str = Field(max_length=15)
     y: str = Field(max_length=15)
-    voie: "Voie" = Relationship(back_populates="lieux")
-    codepostal: "CodePostal" = Relationship(back_populates="lieux")
-    commune: "Commune" = Relationship(back_populates="lieux")
+    voie: Voie = Relationship(back_populates="lieux")
+    codepostal: CodePostal = Relationship(back_populates="lieux")
+    commune: Commune = Relationship(back_populates="lieux")
 
 
 DATATYPE = {
@@ -70,18 +71,18 @@ def populate_db():
 app = FastAPI()
 
 
-@app.get("/log/")
+@app.get("/log")
 def get_log():
     return ml.get_log()
 
 
-@app.delete("/log/")
+@app.delete("/log")
 def get_log():
     ml.clear_log()
     return "succes"
 
 
-@app.post("/create_db/", response_model=Status)
+@app.post("/create_db", response_model=Status)
 def create_db():
     for essai in range(DB_CONNECTION_RETRY):
         try:
@@ -95,29 +96,16 @@ def create_db():
     return Status(False)
 
 
-@app.get("/get/{type_donnee}/{id}/")
-def get_elem(type_donnee: str, id: int):
-    if not (classe_choisie := DATATYPE.get(type_donnee.lower())):
-        return "no go"
+@app.get("/get/lieux/{id_lieux}", response_model=Lieux)
+def get_voie(id_lieux: int):
     with Session(ENGINE) as session:
         try:
-            return session.exec(select(classe_choisie).where(classe_choisie.ID == id)).one()
+            return session.get(Lieux, id_lieux)
         except NoResultFound:
-            return "curl ko"
+            return "no result found"
 
 
-@app.get("/like/{type_donnee}/{id}/")
-def get_like_elem(type_donnee: str, id: int):
-    if not (classe_choisie := DATATYPE.get(type_donnee.lower())):
-        return "no go"
-    with Session(ENGINE) as session:
-        try:
-            return session.exec(select(classe_choisie).where(classe_choisie.ID == id)).one() # TODO add like for comparison
-        except NoResultFound:
-            return "curl ko"
-
-
-@app.post("/populate_db/")
+@app.post("/populate_db")
 def post_populate_db():
     create_db()
     populate_db()
