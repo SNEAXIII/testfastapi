@@ -5,9 +5,15 @@ stop_wsl:
 	$(shell python manage_docker_state.py stop)
 create_ssl_keys:
 	php $(api_console_path) lexik:jwt:generate-keypair
+build:
+	make start_docker_desktop
+	docker compose build
 up:
 	make start_docker_desktop
 	docker compose up
+buildup:
+	make build
+	make up
 stop:
 	docker compose stop
 down:
